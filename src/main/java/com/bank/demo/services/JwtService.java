@@ -7,6 +7,8 @@ import java.util.function.Function;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.bank.demo.entities.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -36,7 +38,7 @@ public class JwtService {
     public String generateToken(User user) {
 
         return Jwts.builder()
-                .setSubject(user.getCpf())
+                .setSubject(user.getUsername())
                 .claim("id", user.getId())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
@@ -44,7 +46,7 @@ public class JwtService {
                 .compact();
     }
 
-    public String extractCpf(String token) {
+    public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -53,8 +55,8 @@ public class JwtService {
     }
 
     public boolean isTokenValid(String token, User user) {
-        final String cpf = extractCpf(token);
-        return cpf.equals(user.getUsername()) && !isTokenExpired(token);
+        final String username = extractUsername(token);
+        return username.equals(user.getUsername()) && !isTokenExpired(token);
     }
 
     private boolean isTokenExpired(String token) {
