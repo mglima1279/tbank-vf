@@ -13,26 +13,28 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "users_tb")
-@Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    private long id;
 
     @Column(length = 11, nullable = false, unique = true)
-    String login;
+    private String login;
 
     @Column(length = 60, nullable = false)
-    String password;
+    private String password;
+
+    public long getId() {
+        return id;
+    }
 
     //------------------------------------------------------------------
     @Override
