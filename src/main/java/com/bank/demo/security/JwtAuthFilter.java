@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.bank.demo.entities.User;
-import com.bank.demo.services.CustomUserDetailsService;
+import com.bank.demo.repositories.UserRepository;
 import com.bank.demo.services.JwtService;
 
 import jakarta.servlet.FilterChain;
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final CustomUserDetailsService customUserDetailsService;
+    private final UserRepository userRepository;
 
     @Override
     protected void doFilterInternal(
@@ -42,7 +42,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            User user = customUserDetailsService.loadUserByUsername(username);
+            User user = userRepository.findByUsername(username).get();
 
             if (jwtService.isTokenValid(token, user)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
