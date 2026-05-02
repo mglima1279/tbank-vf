@@ -1,6 +1,7 @@
 package com.bank.demo.entities;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,36 +9,32 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "accounts_tb")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class Account {
+public class Transaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private User user;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Account fromAccount;
 
-    @Column(nullable = false, length = 11, unique = true)
-    private String cpf;
-
-    @Column(nullable = false, length = 11, unique = true)
-    private String tel;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Account toAccount;
 
     @Column(nullable = false)
-    private BigDecimal balance;
+    private BigDecimal amount;
 
+    @Column(nullable = false)
+    private LocalDateTime timestamp;
 }
