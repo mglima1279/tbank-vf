@@ -1,6 +1,5 @@
 package com.bank.demo.services;
 
-
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ public class AuthService implements UserDetailsService {
 
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
+    private final AccountService accountService;
 
     @Override
     public User loadUserByUsername(String username) {
@@ -34,7 +34,11 @@ public class AuthService implements UserDetailsService {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        return repository.save(user);
+        user = repository.save(user);
+
+        accountService.create(user, request.getCpf(), request.getTel());
+
+        return user;
     }
 
     public User authenticateUser(UserRequestDTO request) {
@@ -44,7 +48,7 @@ public class AuthService implements UserDetailsService {
 
         return loadUserByUsername(request.getUsername());
     }
-    
+
     private Boolean passwordMatches(UserRequestDTO request) {
         String encodedPassword = repository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("incorrect username or password"))
