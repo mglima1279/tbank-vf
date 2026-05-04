@@ -5,11 +5,19 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.bank.demo.entities.Transaction;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
-    List<Transaction> findAllByFromAccountUserId(long userId);
+    @Query("""
+                SELECT t FROM Transaction t
+                WHERE t.fromAccount.id = :accountId
+                   OR t.toAccount.id = :accountId
+            """)
+    List<Transaction> findAllByAccountId(@Param("accountId") long accountId);
+
     Optional<Transaction> findByPublicId(UUID pid);
 }

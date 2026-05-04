@@ -41,7 +41,7 @@ public class AccountService {
     public AccountResponseDTO readDTO(long userId, Account account) {
         AccountResponseDTO dto = AccountResponseDTO.fromEntity(account);
 
-        dto.setTransactions(getMyTransactions(userId).stream()
+        dto.setTransactions(getMyTransactions(account.getId()).stream()
                 .map(TransactionResponseDTO::fromEntity)
                 .toList());
 
@@ -98,8 +98,8 @@ public class AccountService {
         return transactionRepository.save(transaction);
     }
 
-    public List<Transaction> getMyTransactions(long userId) {
-        return transactionRepository.findAllByFromAccountUserId(userId);
+    public List<Transaction> getMyTransactions(long id) {
+        return transactionRepository.findAllByAccountId(id);
     }
 
     public Transaction getTransactionById(long userId, long id) {

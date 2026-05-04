@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +42,7 @@ public class TransactionController {
             return ResponseEntity.ok(TransactionResponseDTO.fromEntity(transaction));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
-        }
+        } 
     }
 
     @GetMapping
@@ -62,9 +63,9 @@ public class TransactionController {
         }
     }
 
-    @PostMapping("/by-id")
+    @GetMapping("/{id}")
     public ResponseEntity<TransactionResponseDTO> getTransactionById(@AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody UUID id) {
+            @PathVariable UUID id) {
         try {
             User user = authService.loadUserByUsername(userDetails.getUsername());
             Transaction transaction = accountService.getTransactionByPublicId(user.getId(), id);
@@ -75,9 +76,9 @@ public class TransactionController {
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTransaction(@AuthenticationPrincipal UserDetails userDetails,
-            @RequestBody UUID id) {
+            @PathVariable UUID id) {
         try {
             User user = authService.loadUserByUsername(userDetails.getUsername());
             accountService.deleteTransaction(user.getId(), id);
