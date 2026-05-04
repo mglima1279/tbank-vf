@@ -16,8 +16,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class TransactionRequestDTO {
 
-    private Long fromAccountId;
-    private Long toAccountId;
+    private long toAccountId;
 
     private BigDecimal amount;
 

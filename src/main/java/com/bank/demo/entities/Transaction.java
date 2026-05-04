@@ -2,6 +2,7 @@ package com.bank.demo.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,6 +24,9 @@ public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(nullable = false, unique = true, length=36)
+    private UUID publicId;
 
     @ManyToOne
     @JoinColumn(nullable = false)
