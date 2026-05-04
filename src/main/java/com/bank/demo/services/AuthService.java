@@ -34,11 +34,15 @@ public class AuthService implements UserDetailsService {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user = repository.save(user);
 
-        accountService.create(user, request.getCpf(), request.getTel());
+        try {
+            user = repository.save(user);
+            accountService.create(user, request.getCpf(), request.getTel());
 
-        return user;
+            return user;
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error occurred while creating user account: " + e.getMessage());
+        }
     }
 
     public User authenticateUser(UserRequestDTO request) {
