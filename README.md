@@ -144,6 +144,90 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ---
 
+### 📍 GET `/me/deposit`
+
+Retorna dados da conta do usuário após se fazer um depósito.
+
+### 🔐 Header obrigatório
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 📥 Request
+
+```json
+  200
+```
+
+### 📤 Response (200 OK)
+
+```json
+{
+  "username": "joao.silva",
+  "cpf": "12345678900",
+  "tel": "79999999999",
+  "balance": 1500.75,
+  "transactions": [
+    {
+      "publicId": "550e8400-e29b-41d4-a716-446655440000",
+      "fromUsername": "joao.silva",
+      "toUsername": "maria.souza",
+      "amount": 200.00,
+      "timestamp": "2026-05-01T14:30:00"
+    }
+  ]
+}
+```
+
+### ❌ Erros
+
+* **400 Bad Request**
+
+---
+
+### 📍 GET `/me/withdraw`
+
+Retorna dados da conta do usuário após se fazer um saque se houver saldo.
+
+### 🔐 Header obrigatório
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 📥 Request
+
+```json
+  200
+```
+
+### 📤 Response (200 OK)
+
+```json
+{
+  "username": "joao.silva",
+  "cpf": "12345678900",
+  "tel": "79999999999",
+  "balance": 1500.75,
+  "transactions": [
+    {
+      "publicId": "550e8400-e29b-41d4-a716-446655440000",
+      "fromUsername": "joao.silva",
+      "toUsername": "maria.souza",
+      "amount": 200.00,
+      "timestamp": "2026-05-01T14:30:00"
+    }
+  ]
+}
+```
+
+### ❌ Erros
+
+* **400 Bad Request**
+
+---
+
 ## 💸 Transações
 
 ### 📍 POST `/transactions`
@@ -309,14 +393,3 @@ Authorization: Bearer <seu_token_jwt>
 5. Consultar conta em `/me`
 6. Buscar transação por ID
 7. Deletar transação
-
----
-
-Se quiser, posso agora:
-
-* Gerar coleção do Postman
-* Gerar Swagger automaticamente
-* Criar testes automatizados (JUnit / RestAssured)
-* Adicionar exemplos com curl
-
-Só me falar 👍
