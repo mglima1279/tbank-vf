@@ -17,8 +17,8 @@ import com.bank.demo.dto.TransactionRequestDTO;
 import com.bank.demo.dto.TransactionResponseDTO;
 import com.bank.demo.entities.Transaction;
 import com.bank.demo.entities.User;
+import com.bank.demo.services.AccountService;
 import com.bank.demo.services.AuthService;
-import com.bank.demo.services.TransactionService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/transactions")
 @RequiredArgsConstructor
 public class TransactionController {
-    private final TransactionService transactionService;
+    private final AccountService accountService;
     private final AuthService authService;
 
     @PostMapping
@@ -36,7 +36,7 @@ public class TransactionController {
         try {
             User user = authService.loadUserByUsername(userDetails.getUsername());
 
-            Transaction transaction = transactionService.create(user.getId(), request);
+            Transaction transaction = accountService.createTransaction(user.getId(), request);
 
             return ResponseEntity.ok(TransactionResponseDTO.fromEntity(transaction));
         } catch (Exception e) {
@@ -50,7 +50,7 @@ public class TransactionController {
         try {
             User user = authService.loadUserByUsername(userDetails.getUsername());
 
-            List<Transaction> transactions = transactionService.getMyTransactions(user.getId());
+            List<Transaction> transactions = accountService.getMyTransactions(user.getId());
 
             List<TransactionResponseDTO> response = transactions.stream()
                     .map(TransactionResponseDTO::fromEntity)
@@ -67,7 +67,7 @@ public class TransactionController {
             @RequestBody UUID id) {
         try {
             User user = authService.loadUserByUsername(userDetails.getUsername());
-            Transaction transaction = transactionService.getByPublicId(user.getId(), id);
+            Transaction transaction = accountService.getTransactionByPublicId(user.getId(), id);
 
             return ResponseEntity.ok(TransactionResponseDTO.fromEntity(transaction));
         } catch (Exception e) {
@@ -80,7 +80,7 @@ public class TransactionController {
             @RequestBody UUID id) {
         try {
             User user = authService.loadUserByUsername(userDetails.getUsername());
-            transactionService.delete(user.getId(), id);
+            accountService.deleteTransaction(user.getId(), id);
 
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
