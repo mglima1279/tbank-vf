@@ -14,12 +14,13 @@ import com.bank.demo.services.JwtService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private final AuthService authService;
     private final JwtService jwtService;
-    
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserRequestDTO request) {
         try {
@@ -27,7 +28,7 @@ public class AuthController {
             String token = jwtService.generateToken(user);
             return ResponseEntity.ok(token);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred while registering user");
+            return ResponseEntity.badRequest().body("Error occurred while registering user: " + e.getMessage());
         }
     }
 
