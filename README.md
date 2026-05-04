@@ -1,1 +1,395 @@
-data:text/markdown;charset=utf-8,#%20%F0%9F%93%98%20API%20REST%20-%20Bank%20Demo%0A%0ADocumenta%C3%A7%C3%A3o%20de%20uso%20da%20API%20REST%20para%20autentica%C3%A7%C3%A3o%2C%20conta%20e%20transa%C3%A7%C3%B5es.%0A%0A---%0A%0A##%20%F0%9F%94%90%20Autentica%C3%A7%C3%A3o%0A%0A###%20POST%20%2Fauth%2Fregister%0A%0ACria%20um%20novo%20usu%C3%A1rio%20e%20retorna%20um%20token%20JWT.%0A%0A%60%60%60json%0A%7B%0A%20%20%22username%22%3A%20%22joao.silva%22%2C%0A%20%20%22password%22%3A%20%22123456%22%2C%0A%20%20%22cpf%22%3A%20%2212345678900%22%2C%0A%20%20%22tel%22%3A%20%2279999999999%22%0A%7D%0A%60%60%60%0A%0AResponse%3A%20200%0A%60%60%60text%0Ajwt_token%0A%60%60%60%0A%0A---%0A%0A###%20POST%20%2Fauth%2Flogin%0A%0A%60%60%60json%0A%7B%0A%20%20%22username%22%3A%20%22joao.silva%22%2C%0A%20%20%22password%22%3A%20%22123456%22%0A%7D%0A%60%60%60%0A%0AResponse%3A%20200%0A%60%60%60text%0Ajwt_token%0A%60%60%60%0A%0A---%0A%0A##%20%F0%9F%A7%AA%20Testes%0A%0A###%20GET%20%2Ftest%0A%60%60%60text%0AServer%20is%20running!!%0A%60%60%60%0A%0A###%20GET%20%2Ftest%2Fauth%0AHeader%3A%20Authorization%20Bearer%20token%0A%0A---%0A%0A##%20%F0%9F%91%A4%20Conta%0A%0A###%20GET%20%2Fme%0A%0AResponse%3A%0A%60%60%60json%0A%7B%0A%20%20%22username%22%3A%20%22joao.silva%22%2C%0A%20%20%22cpf%22%3A%20%2212345678900%22%2C%0A%20%20%22tel%22%3A%20%2279999999999%22%2C%0A%20%20%22balance%22%3A%201500.75%2C%0A%20%20%22transactions%22%3A%20%5B%5D%0A%7D%0A%60%60%60%0A%0A---%0A%0A##%20%F0%9F%92%B0%20Dep%C3%B3sito%0A%0A###%20POST%20%2Fme%2Fdeposit%0A%60%60%60json%0A200.00%0A%60%60%60%0A%0AResponse%3A%0A%60%60%60json%0A%7B%0A%20%20%22balance%22%3A%201700.75%0A%7D%0A%60%60%60%0A%0A---%0A%0A##%20%F0%9F%92%B8%20Saque%0A%0A###%20POST%20%2Fme%2Fwithdraw%0A%60%60%60json%0A100.00%0A%60%60%60%0A%0AResponse%3A%0A%60%60%60json%0A%7B%0A%20%20%22balance%22%3A%201600.75%0A%7D%0A%60%60%60%0A%0A---%0A%0A##%20%F0%9F%92%B3%20Transa%C3%A7%C3%B5es%0A%0A###%20POST%20%2Ftransactions%0A%60%60%60json%0A%7B%0A%20%20%22toAccountId%22%3A%202%2C%0A%20%20%22amount%22%3A%20200.00%0A%7D%0A%60%60%60%0A%0A###%20GET%20%2Ftransactions%0ALista%20de%20transa%C3%A7%C3%B5es.%0A%0A---%0A%0A##%20%F0%9F%94%91%20Autentica%C3%A7%C3%A3o%20Geral%0A%0A%60%60%60http%0AAuthorization%3A%20Bearer%20%3Ctoken%3E%0A%60%60%60%0A%0A---%0A%0A##%20%F0%9F%93%8C%20Observa%C3%A7%C3%B5es%0A%0A-%20JWT%20obrigat%C3%B3rio%20em%20rotas%20protegidas%0A-%20BigDecimal%20para%20valores%0A-%20UUID%20em%20transa%C3%A7%C3%B5es%0A-%20Dep%C3%B3sito%20e%20saque%20atualizam%20saldo%20em%20tempo%20real%0A
+# 📘 API REST - Bank Demo
+
+Documentação de uso da API REST para gerenciamento de autenticação, conta e transações.
+
+---
+
+## 🔐 Autenticação
+
+### 📍 POST `/auth/register`
+
+Cria um novo usuário e retorna um token JWT.
+
+### 📥 Request
+
+```json
+{
+  "username": "joao.silva",
+  "password": "123456",
+  "cpf": "12345678900",
+  "tel": "79999999999"
+}
+```
+
+### 📤 Response (200 OK)
+
+```text
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### ❌ Erros
+
+* **400 Bad Request**
+
+```text
+Error occurred while registering user: Username already exists
+```
+
+---
+
+### 📍 POST `/auth/login`
+
+Autentica um usuário e retorna um token JWT.
+
+### 📥 Request
+
+```json
+{
+  "username": "joao.silva",
+  "password": "123456"
+}
+```
+
+### 📤 Response (200 OK)
+
+```text
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### ❌ Erros
+
+* **400 Bad Request**
+
+```text
+Invalid username or password
+```
+
+---
+
+## 🧪 Testes
+
+### 📍 GET `/test`
+
+Verifica se o servidor está online.
+
+### 📤 Response (200 OK)
+
+```text
+Server is running!!
+```
+
+---
+
+### 📍 GET `/test/auth`
+
+Testa autenticação via token JWT.
+
+### 🔐 Header obrigatório
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 📤 Response (200 OK)
+
+```text
+Authenticated user: joao.silva, Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### ❌ Erros
+
+* **401 Unauthorized**
+
+```text
+Unauthorized
+```
+
+---
+
+## 👤 Conta do Usuário
+
+### 📍 GET `/me`
+
+Retorna dados da conta do usuário autenticado.
+
+### 🔐 Header obrigatório
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 📤 Response (200 OK)
+
+```json
+{
+  "username": "joao.silva",
+  "cpf": "12345678900",
+  "tel": "79999999999",
+  "balance": 1500.75,
+  "transactions": [
+    {
+      "publicId": "550e8400-e29b-41d4-a716-446655440000",
+      "fromUsername": "joao.silva",
+      "toUsername": "maria.souza",
+      "amount": 200.00,
+      "timestamp": "2026-05-01T14:30:00"
+    }
+  ]
+}
+```
+
+### ❌ Erros
+
+* **400 Bad Request**
+
+---
+
+### 📍 GET `/me/deposit`
+
+Retorna dados da conta do usuário após se fazer um depósito.
+
+### 🔐 Header obrigatório
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 📥 Request
+
+```json
+  200
+```
+
+### 📤 Response (200 OK)
+
+```json
+{
+  "username": "joao.silva",
+  "cpf": "12345678900",
+  "tel": "79999999999",
+  "balance": 1500.75,
+  "transactions": [
+    {
+      "publicId": "550e8400-e29b-41d4-a716-446655440000",
+      "fromUsername": "joao.silva",
+      "toUsername": "maria.souza",
+      "amount": 200.00,
+      "timestamp": "2026-05-01T14:30:00"
+    }
+  ]
+}
+```
+
+### ❌ Erros
+
+* **400 Bad Request**
+
+---
+
+### 📍 GET `/me/withdraw`
+
+Retorna dados da conta do usuário após se fazer um saque se houver saldo.
+
+### 🔐 Header obrigatório
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 📥 Request
+
+```json
+  200
+```
+
+### 📤 Response (200 OK)
+
+```json
+{
+  "username": "joao.silva",
+  "cpf": "12345678900",
+  "tel": "79999999999",
+  "balance": 1500.75,
+  "transactions": [
+    {
+      "publicId": "550e8400-e29b-41d4-a716-446655440000",
+      "fromUsername": "joao.silva",
+      "toUsername": "maria.souza",
+      "amount": 200.00,
+      "timestamp": "2026-05-01T14:30:00"
+    }
+  ]
+}
+```
+
+### ❌ Erros
+
+* **400 Bad Request**
+
+---
+
+## 💸 Transações
+
+### 📍 POST `/transactions`
+
+Cria uma nova transação.
+
+### 🔐 Header obrigatório
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 📥 Request
+
+```json
+{
+  "toAccountId": 2,
+  "amount": 200.00
+}
+```
+
+### 📤 Response (200 OK)
+
+```json
+{
+  "publicId": "550e8400-e29b-41d4-a716-446655440000",
+  "fromUsername": "joao.silva",
+  "toUsername": "maria.souza",
+  "amount": 200.00,
+  "timestamp": "2026-05-01T14:30:00"
+}
+```
+
+### ❌ Erros
+
+* **400 Bad Request**
+
+---
+
+### 📍 GET `/transactions`
+
+Lista todas as transações do usuário autenticado.
+
+### 🔐 Header obrigatório
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 📤 Response (200 OK)
+
+```json
+[
+  {
+    "publicId": "550e8400-e29b-41d4-a716-446655440000",
+    "fromUsername": "joao.silva",
+    "toUsername": "maria.souza",
+    "amount": 200.00,
+    "timestamp": "2026-05-01T14:30:00"
+  },
+  {
+    "publicId": "660e8400-e29b-41d4-a716-446655440111",
+    "fromUsername": "joao.silva",
+    "toUsername": "carlos.lima",
+    "amount": 50.00,
+    "timestamp": "2026-05-02T09:15:00"
+  }
+]
+```
+
+### ❌ Erros
+
+* **400 Bad Request**
+
+---
+
+### 📍 POST `/transactions/by-id`
+
+Busca uma transação específica pelo ID público.
+
+### 🔐 Header obrigatório
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 📥 Request
+
+```json
+"550e8400-e29b-41d4-a716-446655440000"
+```
+
+### 📤 Response (200 OK)
+
+```json
+{
+  "publicId": "550e8400-e29b-41d4-a716-446655440000",
+  "fromUsername": "joao.silva",
+  "toUsername": "maria.souza",
+  "amount": 200.00,
+  "timestamp": "2026-05-01T14:30:00"
+}
+```
+
+### ❌ Erros
+
+* **400 Bad Request**
+
+---
+
+### 📍 DELETE `/transactions`
+
+Remove uma transação.
+
+### 🔐 Header obrigatório
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### 📥 Request
+
+```json
+"550e8400-e29b-41d4-a716-446655440000"
+```
+
+### 📤 Response
+
+* **204 No Content** (sucesso)
+
+### ❌ Erros
+
+* **400 Bad Request**
+
+---
+
+## 🔑 Autenticação
+
+Todos os endpoints protegidos exigem o header:
+
+```
+Authorization: Bearer <seu_token_jwt>
+```
+
+---
+
+## 📌 Observações
+
+* Datas no padrão ISO 8601 (`yyyy-MM-ddTHH:mm:ss`)
+* Valores monetários utilizam `BigDecimal`
+* IDs de transação são UUID
+* Token JWT é retornado no login e registro
+* O campo `transactions` pode vir vazio caso não existam movimentações
+
+---
+
+## 🚀 Exemplo de fluxo completo
+
+1. Registrar usuário (`joao.silva`)
+2. Fazer login e obter token
+3. Criar transação para `maria.souza`
+4. Listar transações
+5. Consultar conta em `/me`
+6. Buscar transação por ID
+7. Deletar transação
