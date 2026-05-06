@@ -15,6 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AccountResponseDTO {
+
     private String username;
     private String cpf;
     private String tel;

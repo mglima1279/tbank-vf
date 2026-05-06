@@ -16,6 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TransactionResponseDTO {
+
     private UUID publicId;
     private String fromUsername;
     private String toUsername;

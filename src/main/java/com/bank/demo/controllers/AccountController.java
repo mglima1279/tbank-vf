@@ -28,47 +28,35 @@ public class AccountController {
 
     @GetMapping
     public ResponseEntity<AccountResponseDTO> getMyAccount(@AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            User user = authService.loadUserByUsername(userDetails.getUsername());
-            AccountResponseDTO dto = accountService.readDTO(user.getId(), accountService.read(user.getId()));
-            dto.setUsername(userDetails.getUsername());
 
-            return ResponseEntity.ok(dto);
+        User user = authService.loadUserByUsername(userDetails.getUsername());
+        AccountResponseDTO dto = accountService.readDTO(user.getId(), accountService.read(user.getId()));
+        dto.setUsername(userDetails.getUsername());
 
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/deposit")
     public ResponseEntity<AccountResponseDTO> deposit(@AuthenticationPrincipal UserDetails userDetails,
             @RequestBody BigDecimal amount) {
-        try {
-            User user = authService.loadUserByUsername(userDetails.getUsername());
-            accountService.deposit(user.getId(), amount);
-            AccountResponseDTO dto = accountService.readDTO(user.getId(), accountService.read(user.getId()));
-            dto.setUsername(userDetails.getUsername());
 
-            return ResponseEntity.ok(dto);
+        User user = authService.loadUserByUsername(userDetails.getUsername());
+        accountService.deposit(user.getId(), amount);
+        AccountResponseDTO dto = accountService.readDTO(user.getId(), accountService.read(user.getId()));
+        dto.setUsername(userDetails.getUsername());
 
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/withdraw")
     public ResponseEntity<AccountResponseDTO> withdraw(@AuthenticationPrincipal UserDetails userDetails,
             @RequestBody BigDecimal amount) {
-        try {
-            User user = authService.loadUserByUsername(userDetails.getUsername());
-            accountService.withdraw(user.getId(), amount);
-            AccountResponseDTO dto = accountService.readDTO(user.getId(), accountService.read(user.getId()));
-            dto.setUsername(userDetails.getUsername());
 
-            return ResponseEntity.ok(dto);
+        User user = authService.loadUserByUsername(userDetails.getUsername());
+        accountService.withdraw(user.getId(), amount);
+        AccountResponseDTO dto = accountService.readDTO(user.getId(), accountService.read(user.getId()));
+        dto.setUsername(userDetails.getUsername());
 
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(dto);
     }
 }

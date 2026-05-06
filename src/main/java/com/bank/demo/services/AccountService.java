@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.bank.demo.dto.AccountResponseDTO;
@@ -12,6 +13,7 @@ import com.bank.demo.dto.TransactionResponseDTO;
 import com.bank.demo.entities.Account;
 import com.bank.demo.entities.Transaction;
 import com.bank.demo.entities.User;
+import com.bank.demo.exeptions.CustomException;
 import com.bank.demo.repositories.AccountRepository;
 import com.bank.demo.repositories.TransactionRepository;
 
@@ -35,7 +37,8 @@ public class AccountService {
     }
 
     public Account read(long userId) {
-        return accountRepository.findByUserId(userId).orElseThrow(() -> new RuntimeException("Account not found"));
+        return accountRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Account not found"));
     }
 
     public AccountResponseDTO readDTO(long userId, Account account) {
@@ -63,7 +66,7 @@ public class AccountService {
     public Account withdraw(long userId, BigDecimal amount) {
         Account account = read(userId);
         if (!hasBalance(userId, amount)) {
-            throw new RuntimeException("Insufficient balance");
+            throw new CustomException(HttpStatus.valueOf(422), "Insufficient balance");
         }
         account.setBalance(account.getBalance().subtract(amount));
         return accountRepository.save(account);
@@ -73,7 +76,7 @@ public class AccountService {
 
     public Transaction createTransaction(long userId, TransactionRequestDTO request) {
         if (request.getAmount().compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Transaction amount must be non-negative");
+            throw new CustomException(HttpStatus.valueOf(422), "Transaction amount must be non-negative");
         }
 
         Transaction transaction = request.toEntity();
@@ -82,7 +85,7 @@ public class AccountService {
         Account toAccount = read(request.getToAccountId());
 
         if (!hasBalance(fromAccount.getId(), request.getAmount())) {
-            throw new RuntimeException("Insufficient balance");
+            throw new CustomException(HttpStatus.valueOf(422), "Insufficient balance");
         }
 
         transaction.setAmount(request.getAmount());
@@ -104,20 +107,20 @@ public class AccountService {
 
     public Transaction getTransactionById(long userId, long id) {
         Transaction transaction = transactionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
         if (transaction.getFromAccount().getUser().getId() != userId) {
-            throw new RuntimeException("Unauthorized");
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
         return transaction;
     }
 
     public Transaction getTransactionByPublicId(long userId, UUID publicId) {
         Transaction transaction = transactionRepository.findByPublicId(publicId)
-                .orElseThrow(() -> new RuntimeException("Transaction not found"));
+                .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
         if (transaction.getFromAccount().getUser().getId() != userId) {
-            throw new RuntimeException("Unauthorized");
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
 
         return transaction;
