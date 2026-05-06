@@ -42,23 +42,24 @@ public class TransactionController {
     }
 
     @GetMapping
-    public ResponseEntity<List<TransactionResponseDTO>> getMyTransactions(
+    public ResponseEntity<?> getMyTransactions(
             @AuthenticationPrincipal UserDetails userDetails) {
+
         User user = authService.loadUserByUsername(userDetails.getUsername());
 
         List<Transaction> transactions = accountService.getMyTransactions(user.getId());
 
-        List<TransactionResponseDTO> response = transactions.stream()
+        return ResponseEntity.ok(transactions.stream()
                 .map(TransactionResponseDTO::fromEntity)
-                .toList();
-
-        return ResponseEntity.ok(response);
+                .toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TransactionResponseDTO> getTransactionById(@AuthenticationPrincipal UserDetails userDetails,
+    public ResponseEntity<TransactionResponseDTO> getTransactionById(
+            @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable UUID id) {
         User user = authService.loadUserByUsername(userDetails.getUsername());
+
         Transaction transaction = accountService.getTransactionByPublicId(user.getId(), id);
 
         return ResponseEntity.ok(TransactionResponseDTO.fromEntity(transaction));
