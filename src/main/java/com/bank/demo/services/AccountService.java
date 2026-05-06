@@ -79,6 +79,10 @@ public class AccountService {
             throw new CustomException(HttpStatus.valueOf(422), "Transaction amount must be non-negative");
         }
 
+        if (userId == request.getToAccountId()) {
+            throw new CustomException(HttpStatus.CONFLICT, "Transaction cannot be to the same account");
+        }
+
         Transaction transaction = request.toEntity();
 
         Account fromAccount = read(userId);
@@ -109,8 +113,9 @@ public class AccountService {
         Transaction transaction = transactionRepository.findById(id)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
-        if (transaction.getFromAccount().getUser().getId() != userId) {
-            throw new CustomException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        if (transaction.getFromAccount().getUser().getId() != userId
+                && transaction.getToAccount().getUser().getId() != userId) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Transaction not found");
         }
         return transaction;
     }
@@ -119,8 +124,9 @@ public class AccountService {
         Transaction transaction = transactionRepository.findByPublicId(publicId)
                 .orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, "Transaction not found"));
 
-        if (transaction.getFromAccount().getUser().getId() != userId) {
-            throw new CustomException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+        if (transaction.getFromAccount().getUser().getId() != userId
+                && transaction.getToAccount().getUser().getId() != userId) {
+            throw new CustomException(HttpStatus.NOT_FOUND, "Transaction not found");
         }
 
         return transaction;

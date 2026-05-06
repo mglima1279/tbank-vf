@@ -7,9 +7,11 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.bank.demo.entities.Transaction;
 
+@Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
 
     @Query("""
@@ -19,5 +21,5 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
             """)
     List<Transaction> findAllByAccountId(@Param("accountId") long accountId);
 
-    Optional<Transaction> findByPublicId(UUID pid);
+    Optional<Transaction> findByPublicId(UUID publicId);
 }
