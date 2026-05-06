@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.demo.entities.User;
+import com.bank.demo.exeptions.CustomException;
 import com.bank.demo.services.AuthService;
 import com.bank.demo.services.JwtService;
 
@@ -29,7 +30,7 @@ public class TestController {
     @GetMapping("/auth")
     public ResponseEntity<String> authTestEndpoint(@AuthenticationPrincipal UserDetails userDetails) {
         if (userDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "Unauthorized");
         }
 
         User user = authService.loadUserByUsername(userDetails.getUsername());

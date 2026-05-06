@@ -1,6 +1,5 @@
 package com.bank.demo.exeptions;
 
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +11,6 @@ public class CustomExeptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<CustomExceptionEntity> customExceptionHandler(CustomException e) {
         CustomExceptionEntity entity = CustomExceptionEntity.fromException(e);
 
-        return ResponseEntity.status(HttpStatusCode.valueOf(e.getHttpStatusCode())).body(entity);
-    } 
+        return ResponseEntity.status(e.getHttpStatusCode()).body(entity);
+    }
 }

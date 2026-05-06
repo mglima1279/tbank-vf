@@ -12,7 +12,7 @@ import lombok.Setter;
 public class CustomExceptionEntity {
     private String message;
     private LocalDateTime timestamp;
-    
+
     public static CustomExceptionEntity fromException(CustomException e) {
         CustomExceptionEntity entity = new CustomExceptionEntity();
 

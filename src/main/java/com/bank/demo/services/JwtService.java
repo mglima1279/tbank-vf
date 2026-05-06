@@ -5,9 +5,11 @@ import java.util.Date;
 import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.bank.demo.entities.User;
+import com.bank.demo.exeptions.CustomException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -73,8 +75,9 @@ public class JwtService {
 
             return claimsResolver.apply(claims);
 
-        } catch (ExpiredJwtException | MalformedJwtException | UnsupportedJwtException | SignatureException | IllegalArgumentException e) {
-            throw new RuntimeException("Token inválido");
+        } catch (ExpiredJwtException | MalformedJwtException | UnsupportedJwtException | SignatureException
+                | IllegalArgumentException e) {
+            throw new CustomException(HttpStatus.UNAUTHORIZED, "Token inválido");
         }
     }
 }
