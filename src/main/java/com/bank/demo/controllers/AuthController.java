@@ -23,23 +23,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserRequestDTO request) {
-        try {
-            User user = authService.registerUser(request);
-            String token = jwtService.generateToken(user);
-            return ResponseEntity.ok(token);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error occurred while registering user: " + e.getMessage());
-        }
+        User user = authService.registerUser(request);
+        String token = jwtService.generateToken(user);
+        return ResponseEntity.ok(token);
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody UserRequestDTO request) {
-        try {
-            User user = authService.authenticateUser(request);
-            String token = jwtService.generateToken(user);
-            return ResponseEntity.ok(token);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Invalid username or password");
-        }
+        User user = authService.authenticateUser(request);
+        String token = jwtService.generateToken(user);
+        return ResponseEntity.ok(token);
     }
 }

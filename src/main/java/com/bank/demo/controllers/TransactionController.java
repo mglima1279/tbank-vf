@@ -34,58 +34,42 @@ public class TransactionController {
     public ResponseEntity<TransactionResponseDTO> createTransaction(@AuthenticationPrincipal UserDetails userDetails,
             @RequestBody TransactionRequestDTO request) {
 
-        try {
-            User user = authService.loadUserByUsername(userDetails.getUsername());
+        User user = authService.loadUserByUsername(userDetails.getUsername());
 
-            Transaction transaction = accountService.createTransaction(user.getId(), request);
+        Transaction transaction = accountService.createTransaction(user.getId(), request);
 
-            return ResponseEntity.ok(TransactionResponseDTO.fromEntity(transaction));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        } 
+        return ResponseEntity.ok(TransactionResponseDTO.fromEntity(transaction));
     }
 
     @GetMapping
     public ResponseEntity<List<TransactionResponseDTO>> getMyTransactions(
             @AuthenticationPrincipal UserDetails userDetails) {
-        try {
-            User user = authService.loadUserByUsername(userDetails.getUsername());
+        User user = authService.loadUserByUsername(userDetails.getUsername());
 
-            List<Transaction> transactions = accountService.getMyTransactions(user.getId());
+        List<Transaction> transactions = accountService.getMyTransactions(user.getId());
 
-            List<TransactionResponseDTO> response = transactions.stream()
-                    .map(TransactionResponseDTO::fromEntity)
-                    .toList();
+        List<TransactionResponseDTO> response = transactions.stream()
+                .map(TransactionResponseDTO::fromEntity)
+                .toList();
 
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<TransactionResponseDTO> getTransactionById(@AuthenticationPrincipal UserDetails userDetails,
             @PathVariable UUID id) {
-        try {
-            User user = authService.loadUserByUsername(userDetails.getUsername());
-            Transaction transaction = accountService.getTransactionByPublicId(user.getId(), id);
+        User user = authService.loadUserByUsername(userDetails.getUsername());
+        Transaction transaction = accountService.getTransactionByPublicId(user.getId(), id);
 
-            return ResponseEntity.ok(TransactionResponseDTO.fromEntity(transaction));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(TransactionResponseDTO.fromEntity(transaction));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTransaction(@AuthenticationPrincipal UserDetails userDetails,
             @PathVariable UUID id) {
-        try {
-            User user = authService.loadUserByUsername(userDetails.getUsername());
-            accountService.deleteTransaction(user.getId(), id);
+        User user = authService.loadUserByUsername(userDetails.getUsername());
+        accountService.deleteTransaction(user.getId(), id);
 
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.noContent().build();
     }
 }
