@@ -1,16 +1,16 @@
-# 📘 API REST - Bank Demo
-
-Documentação de uso da API REST para gerenciamento de autenticação, conta e transações.
+# 📘 API REST - Bank Demo (Endpoints Detalhados)
 
 ---
 
-## 🔐 Autenticação
+## 🔐 AUTH
+
+---
 
 ### 📍 POST `/auth/register`
 
-Cria um novo usuário e retorna um token JWT.
+Cria um novo usuário e gera token JWT.
 
-### 📥 Request
+#### 📥 Request
 
 ```json
 {
@@ -21,27 +21,29 @@ Cria um novo usuário e retorna um token JWT.
 }
 ```
 
-### 📤 Response (200 OK)
+#### 📤 Response (200 OK)
 
 ```text
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
-### ❌ Erros
+#### ❌ Erros
 
-* **400 Bad Request**
-
-```text
-Error occurred while registering user: Username already exists
+**409 Conflict**
+```json
+{
+  "message": "Username already exists",
+  "timestamp": "2026-05-06T12:00:00"
+}
 ```
 
 ---
 
 ### 📍 POST `/auth/login`
 
-Autentica um usuário e retorna um token JWT.
+Autentica usuário e retorna token JWT.
 
-### 📥 Request
+#### 📥 Request
 
 ```json
 {
@@ -50,29 +52,31 @@ Autentica um usuário e retorna um token JWT.
 }
 ```
 
-### 📤 Response (200 OK)
+#### 📤 Response (200 OK)
 
 ```text
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
-### ❌ Erros
+#### ❌ Erros
 
-* **400 Bad Request**
-
-```text
-Invalid username or password
+**401 Unauthorized**
+```json
+{
+  "message": "Invalid Credentials",
+  "timestamp": "2026-05-06T12:00:00"
+}
 ```
 
 ---
 
-## 🧪 Testes
+## 🧪 TEST
+
+---
 
 ### 📍 GET `/test`
 
-Verifica se o servidor está online.
-
-### 📤 Response (200 OK)
+#### 📤 Response
 
 ```text
 Server is running!!
@@ -82,43 +86,43 @@ Server is running!!
 
 ### 📍 GET `/test/auth`
 
-Testa autenticação via token JWT.
-
-### 🔐 Header obrigatório
+#### 🔐 Header
 
 ```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Authorization: Bearer <token>
 ```
 
-### 📤 Response (200 OK)
+#### 📤 Response
 
 ```text
-Authenticated user: joao.silva, Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Authenticated user: joao.silva, Token: <jwt>
 ```
 
-### ❌ Erros
+#### ❌ Erros
 
-* **401 Unauthorized**
-
-```text
-Unauthorized
+**401 Unauthorized**
+```json
+{
+  "message": "Unauthorized",
+  "timestamp": "2026-05-06T12:00:00"
+}
 ```
 
 ---
 
-## 👤 Conta do Usuário
+## 👤 ACCOUNT
+
+---
 
 ### 📍 GET `/me`
 
-Retorna dados da conta do usuário autenticado.
-
-### 🔐 Header obrigatório
+#### 🔐 Header
 
 ```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Authorization: Bearer <token>
 ```
 
-### 📤 Response (200 OK)
+#### 📤 Response
 
 ```json
 {
@@ -126,121 +130,111 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
   "cpf": "12345678900",
   "tel": "79999999999",
   "balance": 1500.75,
-  "transactions": [
-    {
-      "publicId": "550e8400-e29b-41d4-a716-446655440000",
-      "fromUsername": "joao.silva",
-      "toUsername": "maria.souza",
-      "amount": 200.00,
-      "timestamp": "2026-05-01T14:30:00"
-    }
-  ]
+  "transactions": []
 }
 ```
 
-### ❌ Erros
+#### ❌ Erros
 
-* **400 Bad Request**
+**404 Not Found**
+```json
+{
+  "message": "Account not found",
+  "timestamp": "2026-05-06T12:00:00"
+}
+```
 
 ---
 
-### 📍 GET `/me/deposit`
+### 📍 POST `/me/deposit`
 
-Retorna dados da conta do usuário após se fazer um depósito.
-
-### 🔐 Header obrigatório
+#### 🔐 Header
 
 ```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Authorization: Bearer <token>
 ```
 
-### 📥 Request
+#### 📥 Request
 
 ```json
-  200
+200.00
 ```
 
-### 📤 Response (200 OK)
+#### 📤 Response
 
 ```json
 {
   "username": "joao.silva",
   "cpf": "12345678900",
   "tel": "79999999999",
-  "balance": 1500.75,
-  "transactions": [
-    {
-      "publicId": "550e8400-e29b-41d4-a716-446655440000",
-      "fromUsername": "joao.silva",
-      "toUsername": "maria.souza",
-      "amount": 200.00,
-      "timestamp": "2026-05-01T14:30:00"
-    }
-  ]
+  "balance": 1700.75,
+  "transactions": []
 }
 ```
 
-### ❌ Erros
+#### ❌ Erros
 
-* **400 Bad Request**
+**400 Bad Request**
+```json
+{
+  "message": "Invalid request body",
+  "timestamp": "2026-05-06T12:00:00"
+}
+```
 
 ---
 
-### 📍 GET `/me/withdraw`
+### 📍 POST `/me/withdraw`
 
-Retorna dados da conta do usuário após se fazer um saque se houver saldo.
-
-### 🔐 Header obrigatório
+#### 🔐 Header
 
 ```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Authorization: Bearer <token>
 ```
 
-### 📥 Request
+#### 📥 Request
 
 ```json
-  200
+200.00
 ```
 
-### 📤 Response (200 OK)
+#### 📤 Response
 
 ```json
 {
   "username": "joao.silva",
   "cpf": "12345678900",
   "tel": "79999999999",
-  "balance": 1500.75,
-  "transactions": [
-    {
-      "publicId": "550e8400-e29b-41d4-a716-446655440000",
-      "fromUsername": "joao.silva",
-      "toUsername": "maria.souza",
-      "amount": 200.00,
-      "timestamp": "2026-05-01T14:30:00"
-    }
-  ]
+  "balance": 1300.75,
+  "transactions": []
 }
 ```
 
-### ❌ Erros
+#### ❌ Erros
 
-* **400 Bad Request**
+**422 Unprocessable Entity**
+```json
+{
+  "message": "Insufficient balance",
+  "timestamp": "2026-05-06T12:00:00"
+}
+```
 
 ---
 
-## 💸 Transações
+## 💸 TRANSACTIONS
+
+---
 
 ### 📍 POST `/transactions`
 
-Cria uma nova transação.
-
-### 🔐 Header obrigatório
+#### 🔐 Header
 
 ```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Authorization: Bearer <token>
 ```
 
-### 📥 Request
+#### 📥 Request
 
 ```json
 {
@@ -249,7 +243,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 }
 ```
 
-### 📤 Response (200 OK)
+#### 📤 Response
 
 ```json
 {
@@ -257,27 +251,31 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
   "fromUsername": "joao.silva",
   "toUsername": "maria.souza",
   "amount": 200.00,
-  "timestamp": "2026-05-01T14:30:00"
+  "timestamp": "2026-05-06T12:00:00"
 }
 ```
 
-### ❌ Erros
+#### ❌ Erros
 
-* **400 Bad Request**
+**422 Unprocessable Entity**
+```json
+{
+  "message": "Insufficient balance",
+  "timestamp": "2026-05-06T12:00:00"
+}
+```
+
+**422 Unprocessable Entity**
+```json
+{
+  "message": "Transaction amount must be non-negative",
+  "timestamp": "2026-05-06T12:00:00"
+}
+```
 
 ---
 
 ### 📍 GET `/transactions`
-
-Lista todas as transações do usuário autenticado.
-
-### 🔐 Header obrigatório
-
-```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-```
-
-### 📤 Response (200 OK)
 
 ```json
 [
@@ -286,41 +284,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
     "fromUsername": "joao.silva",
     "toUsername": "maria.souza",
     "amount": 200.00,
-    "timestamp": "2026-05-01T14:30:00"
-  },
-  {
-    "publicId": "660e8400-e29b-41d4-a716-446655440111",
-    "fromUsername": "joao.silva",
-    "toUsername": "carlos.lima",
-    "amount": 50.00,
-    "timestamp": "2026-05-02T09:15:00"
+    "timestamp": "2026-05-06T12:00:00"
   }
 ]
 ```
 
-### ❌ Erros
-
-* **400 Bad Request**
-
 ---
 
-### 📍 POST `/transactions/by-id`
-
-Busca uma transação específica pelo ID público.
-
-### 🔐 Header obrigatório
-
-```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
-```
-
-### 📥 Request
-
-```json
-"550e8400-e29b-41d4-a716-446655440000"
-```
-
-### 📤 Response (200 OK)
+### 📍 GET `/transactions/{id}`
 
 ```json
 {
@@ -328,68 +299,73 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
   "fromUsername": "joao.silva",
   "toUsername": "maria.souza",
   "amount": 200.00,
-  "timestamp": "2026-05-01T14:30:00"
+  "timestamp": "2026-05-06T12:00:00"
 }
 ```
 
-### ❌ Erros
+#### ❌ Erros
 
-* **400 Bad Request**
+**404 Not Found**
+```json
+{
+  "message": "Transaction not found",
+  "timestamp": "2026-05-06T12:00:00"
+}
+```
+
+**401 Unauthorized**
+```json
+{
+  "message": "Unauthorized",
+  "timestamp": "2026-05-06T12:00:00"
+}
+```
 
 ---
 
-### 📍 DELETE `/transactions`
-
-Remove uma transação.
-
-### 🔐 Header obrigatório
+### 📍 DELETE `/transactions/{id}`
 
 ```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+204 No Content
 ```
 
-### 📥 Request
+#### ❌ Erros
+
+**404 Not Found**
+```json
+{
+  "message": "Transaction not found",
+  "timestamp": "2026-05-06T12:00:00"
+}
+```
+
+---
+
+## 🔑 AUTENTICAÇÃO GLOBAL
+
+```
+Authorization: Bearer <JWT_TOKEN>
+```
+
+---
+
+## 🚨 PADRÃO DE ERROS
 
 ```json
-"550e8400-e29b-41d4-a716-446655440000"
-```
-
-### 📤 Response
-
-* **204 No Content** (sucesso)
-
-### ❌ Erros
-
-* **400 Bad Request**
-
----
-
-## 🔑 Autenticação
-
-Todos os endpoints protegidos exigem o header:
-
-```
-Authorization: Bearer <seu_token_jwt>
+{
+  "message": "Descrição do erro",
+  "timestamp": "2026-05-06T12:00:00"
+}
 ```
 
 ---
 
-## 📌 Observações
+## 📌 NOTAS
 
-* Datas no padrão ISO 8601 (`yyyy-MM-ddTHH:mm:ss`)
-* Valores monetários utilizam `BigDecimal`
-* IDs de transação são UUID
-* Token JWT é retornado no login e registro
-* O campo `transactions` pode vir vazio caso não existam movimentações
+- JWT obrigatório em endpoints protegidos  
+- Senhas criptografadas com PasswordEncoder  
+- Transações usam UUID (publicId)  
+- Exceções tratadas por CustomException  
+- Handler global via @ControllerAdvice  
 
 ---
-
-## 🚀 Exemplo de fluxo completo
-
-1. Registrar usuário (`joao.silva`)
-2. Fazer login e obter token
-3. Criar transação para `maria.souza`
-4. Listar transações
-5. Consultar conta em `/me`
-6. Buscar transação por ID
-7. Deletar transação
